@@ -414,6 +414,6 @@ Shader "Universal Render Pipeline/NKStudioFX/Water/Water"
         }
 	}
 
-	CustomEditor "NKStudio.WaterShaderGUI"
+	//CustomEditor "NKStudio.WaterShaderGUI"
 	Fallback "Hidden/InternalErrorShader"	
 }

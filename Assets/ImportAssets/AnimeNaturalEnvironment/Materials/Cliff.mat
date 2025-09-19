@@ -118,8 +118,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _HeightGradient: 0.451
-    - _HeightStartGradient: 0.93
+    - _HeightGradient: 1
+    - _HeightStartGradient: 1.48
     - _IndirectLightMultiplier: 1
     - _IsFace: 0
     - _LightPower: 0.8
@@ -134,6 +134,7 @@ Material:
     - _OutlineZOffsetMaskRemapEnd: 1
     - _OutlineZOffsetMaskRemapStart: 0
     - _Parallax: 0.02
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadowMappingAmount: 0
     - _ReceiveShadowMappingPosOffset: 0
@@ -148,7 +149,7 @@ Material:
     - _UseEmission: 0
     - _UseOcclusion: 0
     - _WorkflowMode: 1
-    - _WorldPositionOffset: 0
+    - _WorldPositionOffset: 1.47
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 1}

@@ -133,6 +133,7 @@ Material:
     - _OutlineZOffsetMaskRemapEnd: 1
     - _OutlineZOffsetMaskRemapStart: 0
     - _Parallax: 0.005
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadowMappingAmount: 0.5
     - _ReceiveShadowMappingPosOffset: 0
