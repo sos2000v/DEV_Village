@@ -118,8 +118,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _HeightGradient: 0.451
-    - _HeightStartGradient: -0.34
+    - _HeightGradient: 0.415
+    - _HeightStartGradient: -1.62
     - _IndirectLightMultiplier: 1
     - _IsFace: 0
     - _LightPower: 0.8
