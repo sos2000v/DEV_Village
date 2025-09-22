@@ -2,45 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerAttack : MonoBehaviour
 {
     public float attackDamage = 20f;
     public float attackRange = 2f;
     public float attackRadius = 1f;
     public LayerMask enemyLayer;
+    public float attackStaminaCost = 15f;
 
     private Animator animator;
+    private PlayerStamina playerStamina;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
+        playerStamina = GetComponent<PlayerStamina>();
     }
-
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("공격 시도!");
             Attack();
         }
     }
 
     private void Attack()
     {
+        playerStamina.UseStamina(attackStaminaCost);
 
-        // 1️⃣ 애니메이션 재생
-        if (animator != null)
+        if (playerStamina.IsExhausted())
         {
-            animator.SetTrigger("Attack");
+            Debug.Log("⚠ 지쳐서 공격 불가");
+            return;
         }
 
+        if (!playerStamina.HasStamina(attackStaminaCost))
+        {
+            Debug.Log("⚠ 스태미나 부족! 공격 불가");
+            return;
+        }
 
-        // 전방에 구체 범위로 탐색
+        animator.SetTrigger("Attack");
+
         Vector3 attackPoint = transform.position + transform.forward * attackRange;
         Collider[] hits = Physics.OverlapSphere(attackPoint, attackRadius, enemyLayer);
-
-        bool hitSomething = false;
 
         foreach (Collider hit in hits)
         {
@@ -49,20 +56,12 @@ public class PlayerAttack : MonoBehaviour
             {
                 enemy.TakeDamage(attackDamage);
                 Debug.Log($"플레이어가 {hit.name} 공격! (데미지 {attackDamage})");
-                hitSomething = true;
             }
-        }
-
-        if (!hitSomething)
-        {
-            Debug.Log("공격 범위 안에 몬스터 없음");
         }
     }
 
-    // Scene 뷰에서 공격 범위 확인
     private void OnDrawGizmosSelected()
     {
-
         Gizmos.color = Color.red;
         Vector3 center = transform.position + transform.forward * attackRange;
         Gizmos.DrawWireSphere(center, attackRadius);

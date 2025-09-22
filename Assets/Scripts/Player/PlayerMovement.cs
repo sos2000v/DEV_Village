@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
     [Header("Movement Settings")]
     public float walkSpeed = 2f;
     public float runSpeed = 5f;
@@ -12,95 +11,65 @@ public class PlayerMovement : MonoBehaviour
 
     private Animator animator;
     private Rigidbody rb;
-
     private Vector3 moveDir;
-    private bool isMoving;
     private bool isRunning;
 
-
+    private PlayerStamina playerStamina;
+    private bool wasExhausted = false;
 
     [Header("Player Stats")]
     public float maxHealth = 100f;
-    public float maxStamina = 100f;
-    public float staminaDrainPerSecond = 15f;
-    public float staminaRecoveryPerSecond = 10f;
-    public float staminaRecoveryDelay = 1f;
-
     private float currentHealth;
-    private float currentStamina;
-    private float staminaRecoveryTimer;
-
-
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        playerStamina = GetComponent<PlayerStamina>();
 
-        // 초기화
         currentHealth = maxHealth;
-        currentStamina = maxStamina;
-        staminaRecoveryTimer = 0f;
-
-
-        // ✅ 캐릭터가 넘어지거나 벽 타지 않게 회전 고정
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
     void Update()
     {
-        // 입력 받기
+        // 이동 입력
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         moveDir = new Vector3(h, 0, v).normalized;
+        bool wantsToRun = Input.GetKey(KeyCode.LeftShift) && moveDir.magnitude > 0;
 
-        // 이동 여부
-        isMoving = moveDir.magnitude > 0;
-        isRunning = Input.GetKey(KeyCode.LeftShift) && isMoving;
-        bool wantsToRun = Input.GetKey(KeyCode.LeftShift) && isMoving;
+        // Exhausted 체크
+        bool exhausted = playerStamina.IsExhausted();
+        if (exhausted != wasExhausted)
+        {
+            animator.SetBool("isExhausted", exhausted);
+            wasExhausted = exhausted;
+            if (exhausted)
+                Debug.Log("⚠ 지쳐서 움직일 수 없음!");
+        }
 
-
-
-        // ✅ 스태미나 확인 (없으면 강제 걷기)
-        if (wantsToRun && currentStamina > 0)
+        // 달리기/걷기
+        if (!exhausted && wantsToRun)
         {
             isRunning = true;
-            currentStamina -= staminaDrainPerSecond * Time.deltaTime;
-            staminaRecoveryTimer = 0f; // 회복 대기시간 초기화
         }
         else
         {
             isRunning = false;
-            staminaRecoveryTimer += Time.deltaTime;
         }
 
-        // ✅ 스태미나 회복
-        if (!isRunning && staminaRecoveryTimer >= staminaRecoveryDelay)
-        {
-            currentStamina += staminaRecoveryPerSecond * Time.deltaTime;
-            currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
-        }
-
-
-        // ✅ Speed 파라미터 갱신 (Animator)
         animator.SetFloat("Speed", moveDir.magnitude);
-
-
-
     }
-
-
-
 
     void FixedUpdate()
     {
-        if (isMoving)
+        // 이동 방향이 있고, 지치지 않았을 때만 이동/회전
+        if (moveDir.magnitude > 0 && !playerStamina.IsExhausted())
         {
-            // 이동
             float currentSpeed = isRunning ? runSpeed : walkSpeed;
             rb.MovePosition(transform.position + moveDir * currentSpeed * Time.deltaTime);
 
-            // 회전
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
@@ -109,42 +78,34 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            // 이동이나 회전 모두 멈춤
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
         }
+
     }
 
+    public float GetHealth() => currentHealth;
 
-    // ✅ 외부에서 호출할 수 있는 체력 함수
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-        Debug.Log($"플레이어 피격! 남은 체력: {currentHealth}");
-
+        Debug.Log($"[Movement] 체력 감소: {amount}, 남은 체력: {currentHealth}");
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("☠ 플레이어 사망!");
     }
 
     public void Heal(float amount)
     {
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        Debug.Log($"[Movement] 체력 회복: {amount}, 현재 체력: {currentHealth}");
     }
-
-    private void Die()
-    {
-        Debug.Log("플레이어 사망!");
-        // 여기서 사망 애니메이션, 리스폰, 게임오버 로직 등 추가 가능
-    }
-
-    // ✅ 현재 체력 / 스태미나 값 외부에서 참조 가능
-    public float GetHealth() => currentHealth;
-    public float GetStamina() => currentStamina;
-
-
 }

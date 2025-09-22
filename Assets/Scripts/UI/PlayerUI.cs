@@ -3,35 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PlayerUI : MonoBehaviour
 {
-    public PlayerMovement player;  // PlayerMovement 스크립트 연결
+    public PlayerMovement playerMovement;
+    public PlayerStamina playerStamina;
+
     public Slider healthBar;
     public Slider staminaBar;
 
     void Start()
     {
-        // 시작 시 슬라이더 초기화
-        healthBar.maxValue = player.maxHealth;
-        staminaBar.maxValue = player.maxStamina;
+        healthBar.maxValue = playerMovement.maxHealth;
+        staminaBar.maxValue = playerStamina.maxStamina;
+        Debug.Log("[UI] 초기화 완료");
     }
 
     void Update()
     {
-        // PlayerMovement에서 현재 체력 / 스태미나 받아와 업데이트
-        healthBar.value = player.GetHealth();
-        staminaBar.value = player.GetStamina();
-   
-        healthBar.value = player.GetHealth();
-        staminaBar.value = player.GetStamina();
+        healthBar.value = playerMovement.GetHealth();
+        staminaBar.value = playerStamina.currentStamina;
 
-        // 🔥 디버그: H 키 누르면 체력 감소
+       //Debug.Log($"[UI] 체력: {healthBar.value:F1}, 스태미나: {staminaBar.value:F1}");
+
         if (Input.GetKeyDown(KeyCode.H))
         {
-            player.TakeDamage(20f);
+            playerMovement.TakeDamage(20f);
+            Debug.Log("[UI] H 키 눌러 체력 감소");
         }
     }
-
-
-
 }
