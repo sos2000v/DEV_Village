@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 6578260000060160260}
   m_Layer: 0
   m_Name: Main Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -380,6 +380,52 @@ Transform:
   - {fileID: 5019716030880575449}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7263712552831314273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7997827021863124121}
+  - component: {fileID: 6831221130792366261}
+  m_Layer: 0
+  m_Name: InventoryTester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7997827021863124121
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263712552831314273}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5019716030880575449}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6831221130792366261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263712552831314273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef7803d576be478a45475573c0a2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventory: {fileID: 3973898968873654657}
+  carrotIcon: {fileID: 21300000, guid: b7fc96642a0b69646b7f98767510f612, type: 3}
 --- !u!1001 &4765692821451900978
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -441,7 +487,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 1841c298173cdad4db8df8602c8f1c8d,
         type: 3}
       propertyPath: m_Name
-      value: PlayerrName
+      value: Player_Name
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1841c298173cdad4db8df8602c8f1c8d,
         type: 3}
@@ -465,7 +511,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1841c298173cdad4db8df8602c8f1c8d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7997827021863124121}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1841c298173cdad4db8df8602c8f1c8d,
         type: 3}
@@ -487,6 +537,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 397185681203725881}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1841c298173cdad4db8df8602c8f1c8d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3973898968873654657}
   m_SourcePrefab: {fileID: 100100000, guid: 1841c298173cdad4db8df8602c8f1c8d, type: 3}
 --- !u!4 &5019716030880575449 stripped
 Transform:
@@ -509,7 +563,7 @@ Rigidbody:
   m_GameObject: {fileID: 5684190956124386659}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 10
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -562,10 +616,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4e3ea916f299945aca32c7c5cde153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 2
+  walkSpeed: 2.5
   runSpeed: 5
-  rotationSpeed: 10
+  rotationSpeed: 12
   maxHealth: 100
+  canControl: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  mainCam: {fileID: 2890466603780847551}
 --- !u!114 &1356384164899571238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,7 +643,8 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  attackStaminaCost: 15
+  attackStaminaCost: 5
+  canControl: 1
 --- !u!114 &397185681203725881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,3 +660,17 @@ MonoBehaviour:
   maxStamina: 100
   exhaustDuration: 3
   currentStamina: 0
+--- !u!114 &3973898968873654657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5684190956124386659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ceb39ebacd2b4b44ae0ccaa8bda8810, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotCount: 27
+  items: []
