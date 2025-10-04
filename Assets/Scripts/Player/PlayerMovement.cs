@@ -64,18 +64,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Tab 키로 인벤토리 열기/닫기
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            isInventoryOpen = !isInventoryOpen; // 인벤토리 상태 토글
-            canControl = !isInventoryOpen;      // 인벤토리가 열려 있으면 이동 불가
+        //if (Input.GetKeyDown(KeyCode.Tab))
+        //{
+        //    isInventoryOpen = !isInventoryOpen; // 인벤토리 상태 토글
+        //    canControl = !isInventoryOpen;      // 인벤토리가 열려 있으면 이동 불가
 
-            Cursor.lockState = canControl ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !canControl;
+        //    Cursor.lockState = canControl ? CursorLockMode.Locked : CursorLockMode.None;
+        //    Cursor.visible = !canControl;
 
-            // 공격 제한 동기화
-            if (playerAttack != null)
-                playerAttack.canControl = canControl;
-        }
+        //    // 공격 제한 동기화
+        //    if (playerAttack != null)
+        //        playerAttack.canControl = canControl;
+        //}
 
        
         // 이동 입력
