@@ -11,7 +11,8 @@ public class InventoryTester : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
-            inventory.AddItem("당근", 1, carrotIcon);
+            // Seed 타입 아이템으로 추가
+            inventory.AddItem("당근", 1, ItemType.Seed, carrotIcon);
         }
 
         if (Input.GetKeyDown(KeyCode.O))

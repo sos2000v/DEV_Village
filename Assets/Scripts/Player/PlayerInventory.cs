@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
+
 public class PlayerInventory : MonoBehaviour
 {
     [Header("인벤토리 설정")]
     public int slotCount = 20; // 인벤토리 칸 수
     public List<InventoryItem> items = new List<InventoryItem>();
 
+    // 지금 장착된 아이템
+    public InventoryItem equippedItem;
+
     public delegate void OnInventoryChanged();
     public OnInventoryChanged onInventoryChangedCallback;
 
     // 아이템 추가
-    public bool AddItem(string name, int amount, Sprite icon = null)
+    public bool AddItem(string name, int amount, ItemType type, Sprite icon = null)
     {
         // 이미 있는 아이템인지 확인
         InventoryItem existingItem = items.Find(i => i.itemName == name);
@@ -28,7 +33,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 int leftover = (existingItem.amount + amount) - existingItem.maxStack;
                 existingItem.amount = existingItem.maxStack;
-                AddItem(name, leftover, icon); // 남은 것 재귀 추가
+                AddItem(name, leftover,type, icon); // 남은 것 재귀 추가
             }
         }
         else

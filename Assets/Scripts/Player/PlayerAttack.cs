@@ -39,7 +39,7 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    private void Attack()
+    public void Attack()
     {
         if (!playerStamina.HasStamina(attackStaminaCost))
         {
