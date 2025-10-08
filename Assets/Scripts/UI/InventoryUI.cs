@@ -1,29 +1,37 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
     [Header("UI Panel")]
-    public GameObject slotGrid;          // ÀüÃ¼ ÀÎº¥Åä¸® (TabÀ¸·Î ¿­°í ´İÀ½)
-    public GameObject hotbarSlotGrid;    // Ç×»ó ÄÑÁ® ÀÖ´Â Hotbar
+    public GameObject slotGrid;          // ì „ì²´ ì¸ë²¤í† ë¦¬ (Tabìœ¼ë¡œ ì—´ê³  ë‹«ìŒ)
+    public GameObject hotbarSlotGrid;    // í•­ìƒ ì¼œì ¸ ìˆëŠ” Hotbar
 
     private bool isOpen = false;
 
-    public Transform slotsParent;        // ½½·ÔµéÀÌ µé¾î°¥ Grid
-    private InventorySlot[] slots;
+    [Header("Slot Parents")]
+    public Transform slotsParent;        // ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ë“¤ (SlotGrid)
+    public Transform hotbarSlotsParent;  // í•«ë°” ìŠ¬ë¡¯ë“¤ (Hotbar_SlotGrid)
+
+    private InventorySlot[] slots;       // ì „ì²´ ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ ë°°ì—´
+    private InventorySlot[] hotbarSlots; // í•«ë°” ìŠ¬ë¡¯ ë°°ì—´
+
     private PlayerInventory inventory;
-    private PlayerMovement player;       // ÇÃ·¹ÀÌ¾î Á¦¾î
-    private PlayerAttack playerAttack;   // °ø°İ Á¦¾î (ÀÖÀ¸¸é)
+    private PlayerMovement player;
+    private PlayerAttack playerAttack;
 
     void Start()
     {
-        slotGrid.SetActive(false);  // ½ÃÀÛ ½Ã ÀüÃ¼ ÀÎº¥Åä¸® ¼û±â±â
+        slotGrid.SetActive(false); // ì‹œì‘ ì‹œ ì¸ë²¤í† ë¦¬ ë‹«ê¸°
         if (hotbarSlotGrid != null)
-            hotbarSlotGrid.SetActive(true); // Hotbar´Â Ç×»ó ÄÑµÎ±â
+            hotbarSlotGrid.SetActive(true); // í•«ë°”ëŠ” í•­ìƒ ì¼œë‘ê¸°
 
         inventory = FindObjectOfType<PlayerInventory>();
+
+        // ìŠ¬ë¡¯ë“¤ ì´ˆê¸°í™”
         slots = slotsParent.GetComponentsInChildren<InventorySlot>();
+        hotbarSlots = hotbarSlotsParent.GetComponentsInChildren<InventorySlot>();
 
         player = FindObjectOfType<PlayerMovement>();
         playerAttack = FindObjectOfType<PlayerAttack>();
@@ -34,23 +42,21 @@ public class InventoryUI : MonoBehaviour
 
     void Update()
     {
-        // Tab Å° ÀÔ·Â ½Ã ÀÎº¥Åä¸® Åä±Û
+        // Tab í‚¤ ì…ë ¥ ì‹œ ì¸ë²¤í† ë¦¬ í† ê¸€
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             isOpen = !isOpen;
             slotGrid.SetActive(isOpen);
 
-            // ÇÃ·¹ÀÌ¾î ¿òÁ÷ÀÓ Á¦ÇÑ
+            // í”Œë ˆì´ì–´ ì´ë™ ì œì–´
             if (player != null)
                 player.canControl = !isOpen;
-            Debug.Log($"[InventoryUI] canControl = {player.canControl}");
 
-
-            // °ø°İ Á¦ÇÑµµ °°ÀÌ Ã³¸®
+            // ê³µê²© ì œì–´
             if (playerAttack != null)
                 playerAttack.canControl = !isOpen;
 
-            // ¸¶¿ì½º Ä¿¼­ »óÅÂ
+            // ë§ˆìš°ìŠ¤ ì»¤ì„œ í‘œì‹œ
             Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = isOpen;
         }
@@ -58,8 +64,8 @@ public class InventoryUI : MonoBehaviour
 
     void UpdateUI()
     {
-        // Hotbar ¾÷µ¥ÀÌÆ®
-        for (int i = 0; i < slots.Length; i++)
+        // ğŸ”¹ í•«ë°” ìŠ¬ë¡¯ ê°±ì‹  (ì•ë¶€ë¶„ Nê°œ)
+        for (int i = 0; i < hotbarSlots.Length; i++)
         {
             if (i < inventory.items.Count)
             {
@@ -68,6 +74,20 @@ public class InventoryUI : MonoBehaviour
             else
             {
                 hotbarSlots[i].ClearSlot();
+            }
+        }
+
+        // ğŸ”¹ ì¼ë°˜ ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ ê°±ì‹  (í•«ë°” ì´í›„)
+        for (int i = 0; i < slots.Length; i++)
+        {
+            int itemIndex = i + hotbarSlots.Length;
+            if (itemIndex < inventory.items.Count)
+            {
+                slots[i].AddItem(inventory.items[itemIndex]);
+            }
+            else
+            {
+                slots[i].ClearSlot();
             }
         }
     }

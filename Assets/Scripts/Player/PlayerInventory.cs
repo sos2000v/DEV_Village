@@ -9,6 +9,7 @@ public class PlayerInventory : MonoBehaviour
 {
     [Header("인벤토리 설정")]
     public int slotCount = 27; // 인벤토리 칸 수
+    public int hotbarCount = 9;    // 🔥 핫바 슬롯 개수 (예: 9개)
     public List<InventoryItem> items = new List<InventoryItem>();
 
     // 지금 장착된 아이템
@@ -17,7 +18,8 @@ public class PlayerInventory : MonoBehaviour
     public delegate void OnInventoryChanged();
     public OnInventoryChanged onInventoryChangedCallback;
 
-    public bool AddItem(string name, int amount, ItemType type, Sprite icon = null)
+
+    public bool AddItem(string name, int amount, ItemType type, Sprite icon = null, int maxStack = 99)
     {
         // 이미 있는 아이템 확인
         InventoryItem existingItem = items.Find(i => i.itemName == name);
@@ -32,7 +34,9 @@ public class PlayerInventory : MonoBehaviour
             {
                 int leftover = (existingItem.amount + amount) - existingItem.maxStack;
                 existingItem.amount = existingItem.maxStack;
-                AddItem(name, leftover, type, icon);
+
+                // 남은 양을 새 슬롯에 추가
+                AddItem(name, leftover, type, icon, maxStack);
             }
         }
         else
@@ -44,7 +48,7 @@ public class PlayerInventory : MonoBehaviour
             }
 
             // 새 아이템 생성
-            InventoryItem newItem = new InventoryItem(name, amount, icon);
+            InventoryItem newItem = new InventoryItem(name, amount, icon, maxStack);
             newItem.itemType = type;
 
             // 새 아이템 우선순위: Hotbar에 넣기
@@ -56,6 +60,9 @@ public class PlayerInventory : MonoBehaviour
             else
             {
                 // 일반 슬롯 뒤쪽으로 추가
+                // 새 아이템 생성 시에도 maxStack 설정
+                InventoryItem newItem = new InventoryItem(name, amount, icon, maxStack);
+                newItem.itemType = type;
                 items.Add(newItem);
             }
         }

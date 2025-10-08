@@ -4412,6 +4412,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3129953774416243204}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1352463146 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5581712543129652934, guid: c1ffaca9683064a47871c36b38a05cec,
+    type: 3}
+  m_PrefabInstance: {fileID: 3129953774416243204}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1366864861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6299,6 +6305,11 @@ PrefabInstance:
       propertyPath: hotbarSlotGrid
       value: 
       objectReference: {fileID: 1352463145}
+    - target: {fileID: 359094042082739222, guid: c1ffaca9683064a47871c36b38a05cec,
+        type: 3}
+      propertyPath: hotbarSlotsParent
+      value: 
+      objectReference: {fileID: 1352463146}
     - target: {fileID: 681130811315643830, guid: c1ffaca9683064a47871c36b38a05cec,
         type: 3}
       propertyPath: m_AnchorMax.y
