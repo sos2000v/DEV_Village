@@ -93,7 +93,7 @@ public class PlayerInteraction : MonoBehaviour
 
         switch (item.itemType)
         {
-            case ItemType.Weapon:
+            case ItemType.Tool:
                 if (playerAttack != null)
                     playerAttack.Attack();
                 break;

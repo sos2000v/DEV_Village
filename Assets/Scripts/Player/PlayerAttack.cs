@@ -14,8 +14,9 @@ public class PlayerAttack : MonoBehaviour
     private Animator animator;
     private PlayerStamina playerStamina;
     private PlayerMovement playerMovement;
+    private PlayerInventory playerInventory;
 
-    
+
 
     [Header("Control Flag")]
     public bool canControl = true; // 인벤토리 열면 공격 제한
@@ -25,7 +26,7 @@ public class PlayerAttack : MonoBehaviour
         animator = GetComponent<Animator>();
         playerStamina = GetComponent<PlayerStamina>();
         playerMovement = GetComponent<PlayerMovement>(); // PlayerMovement 참조
-
+        playerInventory = GetComponent<PlayerInventory>(); // ✅ 인벤토리 가져오기
     }
 
     void Update()
@@ -41,6 +42,22 @@ public class PlayerAttack : MonoBehaviour
 
     public void Attack()
     {
+        // ✅ 1️ 검 장착 여부 확인
+        if (playerInventory == null || playerInventory.equippedItem == null)
+        {
+            Debug.Log("⚠ 무기가 없습니다! (검을 장착해야 공격 가능)");
+            return;
+        }
+
+        // ✅ 2️ 이름 또는 타입으로 검인지 확인
+        if (playerInventory.equippedItem.itemName != "검" &&
+            playerInventory.equippedItem.itemType != ItemType.Weapon)
+        {
+            Debug.Log("⚠ 검을 들어야 공격할 수 있습니다!");
+            return;
+        }
+
+        // ✅ 3️ 스태미나 체크
         if (!playerStamina.HasStamina(attackStaminaCost))
         {
             Debug.Log("⚠ 스태미나 부족! 공격 불가");
@@ -55,7 +72,7 @@ public class PlayerAttack : MonoBehaviour
             return;
         }
 
-        // 공격 시작: PlayerMovement에 알리기
+        // ✅ 4️ 공격 시작: PlayerMovement에 알리기
         if (playerMovement != null)
             playerMovement.isAttacking = true;
 

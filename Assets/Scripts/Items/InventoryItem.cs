@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,23 +6,28 @@ using UnityEngine;
 
 public enum ItemType
 {
-    Weapon,     // °Ë, È° µî °ø°İ¿ë
-    Seed,       // ¾¾¾Ñ·ù
-    Animal,     // ¸ñÃà °ü·Ã
-    Craft,      // Á¦ÀÛ Àç·á
-    Gift,       // ¼±¹°¿ë ¾ÆÀÌÅÛ
-    Consumable  // È¸º¹¾à µî
+    None,       // ê¸°ë³¸ê°’
+    Weapon,     // ê³µê²©ìš© ë¬´ê¸° (ê²€, í™œ, ë„ë¼ ë“±)
+    Tool,       // ì‘ì—…ìš© ë„êµ¬ (ê³¡ê´­ì´, ë‚«, ë¬¼ë¿Œë¦¬ê°œ ë“±)
+    Seed,       // ì”¨ì•—ë¥˜
+    Animal,     // ëª©ì¶• ê´€ë ¨
+    Craft,      // ì œì‘ ì¬ë£Œ
+    Gift,       // ì„ ë¬¼ìš© ì•„ì´í…œ
+    Consumable  // íšŒë³µì•½ ë“±
 }
 
 [System.Serializable]
 public class InventoryItem
 {
-    public string itemName;   // ¾ÆÀÌÅÛ ÀÌ¸§
-    public Sprite icon;       // UI ¾ÆÀÌÄÜ
-    public int maxStack = 99; // ÃÖ´ë ÁßÃ¸ ¼ö
-    public int amount = 1;    // ÇöÀç °³¼ö
-
+    public string itemName;   // ì•„ì´í…œ ì´ë¦„
+    public Sprite icon;       // UI ì•„ì´ì½˜
+    public int maxStack = 99; // ìµœëŒ€ ì¤‘ì²© ìˆ˜
+    public int amount = 1;    // í˜„ì¬ ê°œìˆ˜
     public ItemType itemType;
+
+    // âš™ï¸ ë¬´ê¸°ë‚˜ ë„êµ¬ì—ë§Œ í•´ë‹¹í•˜ëŠ” ì†ì„± (ì„ íƒì ìœ¼ë¡œ ì‚¬ìš©)
+    public float attackPower;
+    public float durability;
 
 
     public InventoryItem(string name, int amount, Sprite icon = null, ItemType type = ItemType.Consumable, int maxStack = 99)
@@ -31,7 +36,8 @@ public class InventoryItem
         this.amount = amount;
         this.icon = icon;
         this.itemType = type;
-
         this.maxStack = maxStack;
+        this.attackPower = 0;
+        this.durability = 100f;
     }
 }

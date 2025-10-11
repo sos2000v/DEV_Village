@@ -2,44 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
-
 public class PlayerInventory : MonoBehaviour
 {
     [Header("인벤토리 설정")]
-    public int slotCount = 27; // 인벤토리 칸 수
-    public int hotbarCount = 9;    // 🔥 핫바 슬롯 개수 (예: 9개)
+    public int slotCount = 27;
+    public int hotbarCount = 9;
     public List<InventoryItem> items = new List<InventoryItem>();
 
-    // 지금 장착된 아이템
     public InventoryItem equippedItem;
 
     public delegate void OnInventoryChanged();
     public OnInventoryChanged onInventoryChangedCallback;
 
-
-    public bool AddItem(string name, int amount, ItemType type, Sprite icon = null, int maxStack = 99)
+    public bool AddItem(string name, int amount, ItemType type, Sprite icon = null)
     {
-        // 이미 있는 아이템 확인
-        InventoryItem existingItem = items.Find(i => i.itemName == name);
+        int maxStack = GetDefaultMaxStack(type);
+        int remaining = amount;
 
-        if (existingItem != null)
+        // 1️⃣ 이미 있는 슬롯 중 같은 아이템 찾아서 순차적으로 채우기
+        foreach (var item in items)
         {
-            if (existingItem.amount + amount <= existingItem.maxStack)
+            if (item.itemName == name && item.amount < item.maxStack)
             {
-                existingItem.amount += amount;
-            }
-            else
-            {
-                int leftover = (existingItem.amount + amount) - existingItem.maxStack;
-                existingItem.amount = existingItem.maxStack;
+                int spaceLeft = item.maxStack - item.amount;
+                int toAdd = Mathf.Min(spaceLeft, remaining);
+                item.amount += toAdd;
+                remaining -= toAdd;
 
-                // 남은 양을 새 슬롯에 추가
-                AddItem(name, leftover, type, icon, maxStack);
+                if (remaining <= 0)
+                    break;
             }
         }
-        else
+
+        // 2️⃣ 남은 양이 있으면 새로운 슬롯을 추가
+        while (remaining > 0)
         {
             if (items.Count >= slotCount)
             {
@@ -47,54 +43,70 @@ public class PlayerInventory : MonoBehaviour
                 return false;
             }
 
-            // 새 아이템 생성
-            InventoryItem newItem = new InventoryItem(name, amount, icon, maxStack);
+            int stackAmount = Mathf.Min(remaining, maxStack);
+            InventoryItem newItem = new InventoryItem(name, stackAmount, icon, type, maxStack);
             newItem.itemType = type;
 
-            // 새 아이템 우선순위: Hotbar에 넣기
-            if (items.Count < hotbarCount)
-            {
-                // 핫바 끝 위치에 삽입
-                items.Insert(items.Count, newItem);
-            }
-            else
-            {
-                // 일반 슬롯 뒤쪽으로 추가
-                // 새 아이템 생성 시에도 maxStack 설정
-                InventoryItem newItem = new InventoryItem(name, amount, icon, maxStack);
-                newItem.itemType = type;
-                items.Add(newItem);
-            }
+            items.Add(newItem);
+            remaining -= stackAmount;
         }
 
         onInventoryChangedCallback?.Invoke();
-        Debug.Log($"✅ 아이템 추가: {name} x{amount}");
+        Debug.Log($"✅ 아이템 추가 완료: {name} x{amount}");
         return true;
     }
-
 
     // 아이템 제거
     public bool RemoveItem(string name, int amount)
     {
-        InventoryItem existingItem = items.Find(i => i.itemName == name);
+        int remaining = amount;
 
-        if (existingItem == null) return false;
-
-        existingItem.amount -= amount;
-        if (existingItem.amount <= 0)
+        for (int i = items.Count - 1; i >= 0 && remaining > 0; i--)
         {
-            items.Remove(existingItem);
+            if (items[i].itemName == name)
+            {
+                if (items[i].amount > remaining)
+                {
+                    items[i].amount -= remaining;
+                    remaining = 0;
+                }
+                else
+                {
+                    remaining -= items[i].amount;
+                    items.RemoveAt(i);
+                }
+            }
         }
+
+        if (remaining > 0)
+            Debug.LogWarning($"⚠️ {name} {remaining}개 부족해서 전부 제거 못함");
 
         onInventoryChangedCallback?.Invoke();
         Debug.Log($"🗑 아이템 제거: {name} x{amount}");
         return true;
     }
 
-    // 특정 아이템 보유 여부 확인
+    // 아이템 보유 여부
     public bool HasItem(string name, int amount = 1)
     {
-        InventoryItem existingItem = items.Find(i => i.itemName == name);
-        return existingItem != null && existingItem.amount >= amount;
+        int total = 0;
+        foreach (var item in items)
+        {
+            if (item.itemName == name)
+                total += item.amount;
+        }
+        return total >= amount;
+    }
+
+    // 타입별 기본 최대 스택 설정
+    private int GetDefaultMaxStack(ItemType type)
+    {
+        switch (type)
+        {
+            case ItemType.Tool: return 1;
+            case ItemType.Consumable: return 10;
+            case ItemType.Seed: return 99;
+            default: return 99;
+        }
     }
 }
