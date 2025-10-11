@@ -60,6 +60,15 @@ public class InventoryUI : MonoBehaviour
             Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = isOpen;
         }
+
+        // 🔹 숫자키 입력으로 핫바 장착
+        for (int i = 0; i < inventory.hotbarCount; i++)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+            {
+                inventory.EquipHotbarItem(i);
+            }
+        }
     }
 
     void UpdateUI()

@@ -89,7 +89,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (playerInventory == null || playerInventory.equippedItem == null) return;
 
-        var item = playerInventory.equippedItem;
+        var item = playerInventory.equippedItem; // ItemSO
 
         switch (item.itemType)
         {
@@ -103,12 +103,15 @@ public class PlayerInteraction : MonoBehaviour
                 {
                     // 땅을 경작 후 심기
                     selectedLand.SwitchLandStatus(Land.LandStatus.Farmland);
-                    playerInventory.RemoveItem(item.itemName, 1);
+
+                    // ❌ 기존: playerInventory.RemoveItem(item.itemName, 1);
+                    // ✅ 수정: ItemSO 기반
+                    playerInventory.RemoveItem(item, 1);
+
                     Debug.Log($"🌱 {item.itemName} 심음!");
                 }
                 break;
 
-            // 다른 타입도 추가 가능
             default:
                 Debug.Log($"사용 불가 아이템: {item.itemName}");
                 break;

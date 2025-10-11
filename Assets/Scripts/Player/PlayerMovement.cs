@@ -63,20 +63,6 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // Tab 키로 인벤토리 열기/닫기
-        //if (Input.GetKeyDown(KeyCode.Tab))
-        //{
-        //    isInventoryOpen = !isInventoryOpen; // 인벤토리 상태 토글
-        //    canControl = !isInventoryOpen;      // 인벤토리가 열려 있으면 이동 불가
-
-        //    Cursor.lockState = canControl ? CursorLockMode.Locked : CursorLockMode.None;
-        //    Cursor.visible = !canControl;
-
-        //    // 공격 제한 동기화
-        //    if (playerAttack != null)
-        //        playerAttack.canControl = canControl;
-        //}
-
        
         // 이동 입력
         float h = Input.GetAxisRaw("Horizontal");
@@ -113,6 +99,9 @@ public class PlayerMovement : MonoBehaviour
                     Quaternion targetRot = Quaternion.LookRotation(lookDir);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
                 }
+                Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
+
+
             }
         }
     }
@@ -121,38 +110,6 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         if (!canControl) return;
-
-
-        //// 마우스 커서 기준으로 회전 방향 구하기
-        //Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-        //Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
-
-        //if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
-        //{
-        //    //Debug.Log($"Hit at {hit.point}"); // 👈 이거 찍히는지 확인
-        //    Vector3 lookDir = hit.point - transform.position;
-        //    lookDir.y = 0;
-        //    if (lookDir.sqrMagnitude > 0.01f)
-        //    {
-        //        Quaternion targetRot = Quaternion.LookRotation(lookDir);
-        //        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
-        //    }
-        //}
-        ////else
-        //{
-        //    //Debug.Log("No ground hit!");
-        //}
-
-        //{
-
-        //    Vector3 lookDir = hit.point - transform.position;
-        //    lookDir.y = 0; // 수평 회전만
-        //    if (lookDir.sqrMagnitude > 0.01f)
-        //    {
-        ////        Quaternion targetRot = Quaternion.LookRotation(lookDir);
-        ////        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
-        //    }
-        //}
 
         if (moveDir.magnitude > 0 && !playerStamina.IsExhausted())
         {
@@ -180,6 +137,14 @@ public class PlayerMovement : MonoBehaviour
     public void SetAttackState(bool state)
     {
         isAttacking = state;
+
+        if (!state)
+        {
+            // 공격 종료 시 현재 방향으로 회전 고정 → 빙글빙글 방지
+            Vector3 forward = transform.forward;
+            forward.y = 0;
+            transform.rotation = Quaternion.LookRotation(forward);
+        }
     }
 
 

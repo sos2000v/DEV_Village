@@ -5,19 +5,19 @@ using UnityEngine;
 public class InventoryTester : MonoBehaviour
 {
     public PlayerInventory inventory;
-    public Sprite carrotIcon;
+    public ItemSO carrotItemSO; // ScriptableObject 참조
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
-            // Seed 타입 아이템으로 추가
-            inventory.AddItem("당근", 10, ItemType.Seed, carrotIcon);
+            // ItemSO 기반으로 추가
+            inventory.AddItem(carrotItemSO, 10);
         }
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            inventory.RemoveItem("당근", 1);
+            inventory.RemoveItem(carrotItemSO, 1);
         }
     }
 }
