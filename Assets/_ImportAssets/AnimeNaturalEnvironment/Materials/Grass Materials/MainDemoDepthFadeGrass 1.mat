@@ -94,7 +94,7 @@ Material:
     - _AlphaDeflate: 0
     - _BlueInflate: 0
     - _BumpScale: 1
-    - _Clip: 0.5
+    - _Clip: 0.508
     - _Cutoff: 0.5
     - _DepthFactor: 0.06
     - _DetailNormalMapScale: 1
@@ -109,8 +109,8 @@ Material:
     - _GrassAmount: 0.97
     - _GrassLevel: 2.94
     - _GreenSub: 0
-    - _HeightGradient: 0.083
-    - _HeightStartGradient: 0.076
+    - _HeightGradient: 0.116
+    - _HeightStartGradient: 0
     - _InflateGround: 35
     - _IntersectionPow: 5.78
     - _IntersectionScale: 1

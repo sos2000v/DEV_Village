@@ -37,7 +37,9 @@ public class PlayerMovement : MonoBehaviour
     public bool isAttacking = false; // 공격 상태
     private PlayerAttack playerAttack;   // 공격 스크립트 참조
 
-
+    // ✅ 공격 회전 관련
+    private Quaternion attackTargetRotation;
+    private bool attackRotationSet = false;
 
 
     void Start()
@@ -87,22 +89,32 @@ public class PlayerMovement : MonoBehaviour
 
 
         // 공격 중이면 마우스 방향으로 회전
-        if (isAttacking && mainCam != null)
+        if (isAttacking)
         {
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
+            if (isAttacking && mainCam != null)
             {
-                Vector3 lookDir = hit.point - transform.position;
-                lookDir.y = 0;
-                if (lookDir.sqrMagnitude > 0.01f)
+                Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
                 {
-                    Quaternion targetRot = Quaternion.LookRotation(lookDir);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+                    Vector3 lookDir = hit.point - transform.position;
+                    lookDir.y = 0; //수평만 회전
+
+                    // lookDir이 충분히 크면 회전
+                    if (lookDir.sqrMagnitude > 0.01f)
+                    {
+                        attackTargetRotation = Quaternion.LookRotation(lookDir);
+                        attackRotationSet = true; // ✅ 한 번만 계산
+                    }
                 }
-                Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
-
-
             }
+
+            // 공격 중에는 목표 회전으로만 회전
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                attackTargetRotation,
+                rotationSpeed * 100f * Time.deltaTime
+            );
+
         }
     }
 
@@ -140,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (!state)
         {
-            // 공격 종료 시 현재 방향으로 회전 고정 → 빙글빙글 방지
+            attackRotationSet = false; // 다음 공격을 위해 초기화
             Vector3 forward = transform.forward;
             forward.y = 0;
             transform.rotation = Quaternion.LookRotation(forward);

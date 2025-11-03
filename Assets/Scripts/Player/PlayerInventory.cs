@@ -99,6 +99,18 @@ public class PlayerInventory : MonoBehaviour
         if (remaining > 0)
             Debug.LogWarning($"⚠️ {itemSO.itemName} {remaining}개 부족해서 전부 제거 못함");
 
+        // ✅ 장착 중인 아이템이 전부 사라지면 자동 해제
+        if (equippedItem == itemSO && !HasItem(itemSO))
+        {
+            equippedItem = null;
+
+            PlayerEquipment playerEquip = FindObjectOfType<PlayerEquipment>();
+            if (playerEquip != null)
+                playerEquip.ClearEquippedItem();
+
+            Debug.Log($"[Inventory] 장착 중인 {itemSO.itemName} 사라져서 자동 장착 해제됨");
+        }
+
         onInventoryChangedCallback?.Invoke();
         Debug.Log($"🗑 아이템 제거: {itemSO.itemName} x{amount}");
         return true;

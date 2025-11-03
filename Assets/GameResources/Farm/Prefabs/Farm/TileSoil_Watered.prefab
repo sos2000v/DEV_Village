@@ -94,9 +94,10 @@ GameObject:
   - component: {fileID: 4029924475102294108}
   - component: {fileID: 941572629902532033}
   - component: {fileID: 2987622977027089190}
+  - component: {fileID: 8602151683410368692}
   - component: {fileID: 4067054286816307849}
   m_Layer: 0
-  m_Name: TileSoil
+  m_Name: TileSoil_Watered
   m_TagString: Land
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,7 +112,7 @@ Transform:
   m_GameObject: {fileID: 8075797979833464420}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.41, y: -1.9499999, z: -6.1499996}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -146,7 +147,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: eb16c6e82c3131d48ad8c1afcf16aefb, type: 2}
+  - {fileID: 2100000, guid: f5ebf7ba69cbd1444b243439f63d26ba, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -168,6 +169,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8602151683410368692
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8075797979833464420}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0000002, y: 2, z: 2.0000002}
+  m_Center: {x: -0.00000011920929, y: 1, z: 0.00000011920929}
 --- !u!114 &4067054286816307849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   landStatus: 0
-  soilMat: {fileID: 2100000, guid: eb16c6e82c3131d48ad8c1afcf16aefb, type: 2}
-  farmlandMat: {fileID: 2100000, guid: 74d5e65cffbebf647afedd89c31ef6f5, type: 2}
-  wateredMat: {fileID: 2100000, guid: f5ebf7ba69cbd1444b243439f63d26ba, type: 2}
+  soilPrefab: {fileID: 0}
+  farmlandPrefab: {fileID: 2582875128571546930, guid: 56b9b42e198b4ef4f8835340758f5f75,
+    type: 3}
+  wateredPrefab: {fileID: 0}
   select: {fileID: 68400777881070196}

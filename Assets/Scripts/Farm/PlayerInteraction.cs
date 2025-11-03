@@ -14,6 +14,9 @@ public class PlayerInteraction : MonoBehaviour
     Land selectedLand = null;
     Camera mainCamera;
 
+    [Header("심기 딜레이")]
+    public float plantDelay = 0.3f; // 초 단위
+    private bool canPlant = true;
 
     void Start()
     {
@@ -43,10 +46,10 @@ public class PlayerInteraction : MonoBehaviour
         }
 
 
-        //좌클릭 동작
-        if (Input.GetMouseButtonDown(0))
+        // 우클릭 드래그 심기
+        if (Input.GetMouseButton(1) && canPlant)
         {
-            UseEquippedItem();
+            StartCoroutine(PlantWithDelay());
         }
     }
 
@@ -84,40 +87,45 @@ public class PlayerInteraction : MonoBehaviour
         land.Select(true);
     }
 
-
-    void UseEquippedItem()
+    IEnumerator PlantWithDelay()
     {
-        if (playerInventory == null || playerInventory.equippedItem == null) return;
+        canPlant = false; // 딜레이 동안 재호출 방지
+        PlantSeed();
+        yield return new WaitForSeconds(plantDelay);
+        canPlant = true;
+    }
 
-        var item = playerInventory.equippedItem; // ItemSO
-
-        switch (item.itemType)
+    void PlantSeed()
+    {
+        // 손에 아이템이 없으면 바로 종료
+        if (playerInventory == null || playerInventory.equippedItem == null)
         {
-            case ItemType.Tool:
-                if (playerAttack != null)
-                    playerAttack.Attack();
-                break;
+            Debug.Log("❌ 손에 아이템 없음, 심기 불가");
+            return;
+        }
 
-            case ItemType.Seed:
-                if (selectedLand != null && selectedLand.landStatus == Land.LandStatus.Soil)
-                {
-                    // 땅을 경작 후 심기
-                    selectedLand.SwitchLandStatus(Land.LandStatus.Farmland);
 
-                    // ❌ 기존: playerInventory.RemoveItem(item.itemName, 1);
-                    // ✅ 수정: ItemSO 기반
-                    playerInventory.RemoveItem(item, 1);
+        ItemSO item = playerInventory.equippedItem;
 
-                    Debug.Log($"🌱 {item.itemName} 심음!");
-                }
-                break;
+        if (item.itemType != ItemType.Seed)
+        {
+            Debug.Log("❌ 손에 씨앗을 들고 있어야 심을 수 있습니다!");
+            return;
+        }
 
-            default:
-                Debug.Log($"사용 불가 아이템: {item.itemName}");
-                break;
+        if (selectedLand != null && selectedLand.landStatus == Land.LandStatus.Soil)
+        {
+            // Land 상태 변경 → CropPrefab 생성
+            selectedLand.SwitchLandStatus(Land.LandStatus.Farmland);
+
+            // 인벤토리에서 씨앗 1개 제거
+            bool removed = playerInventory.RemoveItem(item, 1);
+            if (removed)
+                Debug.Log($"🌱 {item.itemName} 심음!");
+            else
+                Debug.LogWarning($"❌ {item.itemName} 인벤토리에 없음");
         }
     }
 }
-
 
 

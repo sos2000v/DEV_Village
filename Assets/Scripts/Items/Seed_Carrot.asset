@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Seed_Carrot
   m_EditorClassIdentifier: 
   itemName: Seed_Carrot
-  itemType: 3
-  icon: {fileID: 21300000, guid: 22514c13dec37134c8f2c8f48ad885bc, type: 3}
   prefab: {fileID: 5037954230689703020, guid: 50d1f953195711a489a867dd5a9019d4, type: 3}
+  itemType: 3
   maxStack: 99
+  icon: {fileID: 21300000, guid: 22514c13dec37134c8f2c8f48ad885bc, type: 3}
